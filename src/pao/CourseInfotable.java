@@ -1,6 +1,6 @@
 package pao;
 
-public class CourseInfototable {
+public class CourseInfotable {
     private String cname;
     private String cplace;
     private String ctname;
@@ -11,7 +11,7 @@ public class CourseInfototable {
     private String xingqi;
     private String which;  //从哪节开始
 
-    public CourseInfototable(String cname, String cplace, String ctname, String zhoushu, String jieshu, String time1, String time2, String xingqi, String which) {
+    public CourseInfotable(String cname, String cplace, String ctname, String zhoushu, String jieshu, String time1, String time2, String xingqi, String which) {
         this.cname = cname;
         this.cplace = cplace;
         this.ctname = ctname;
