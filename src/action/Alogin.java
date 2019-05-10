@@ -53,61 +53,72 @@ public class Alogin extends HttpServlet {
 			Student student=op.find2(name,pwd);
 			System.out.println(student.getSnumber());
 			
-				if(student.getPwd()!=null&&student.getPwd().equals(pwd))
-//					response.getOutputStream().write("success".getBytes("utf-8"));
-				{
+//				if(student.getPwd()!=null&&student.getPwd().equals(pwd))
+////					response.getOutputStream().write("success".getBytes("utf-8"));
+//				{
 					   //组装成json对象传递给app端
 					JSONArray array = new JSONArray();
 					JSONObject obj = new JSONObject();
 					try {
-						uname=student.getSname();
-							obj.put("snumber", student.getSnumber());
-							obj.put("sname", student.getSname());
-							obj.put("sex", student.getSsex());
-							obj.put("sdept", student.getSdept());
-							obj.put("pwd", student.getPwd());		
+						obj.put("image",null+"");
+						obj.put("name", student.getSname()+"");
+						obj.put("sex", student.getSsex()+"");
+						obj.put("dept", student.getSdept()+"");
+						obj.put("pwd", student.getPwd()+"");
+						
+						if(student.getPwd()!=null&&student.getPwd().equals(pwd))
+							{obj.put("number", student.getSnumber());}
+						else 
+							{obj.put("number", "fail");}
+						
+									
 					} catch (Exception e) {
 						
 					}
 					array.put(obj);
 //					out.println("success");
 					System.out.println(array.toString());
-					response.getOutputStream().write((uname).getBytes("utf-8"));
+					response.getOutputStream().write((array.toString()).getBytes("utf-8"));
 					
 					
-				}
-				else
-					response.getOutputStream().write("fail".getBytes());
+//				}
+//				else
+//					response.getOutputStream().write("fail".getBytes());
 //					out.println("login fail");
 		}else if(identity.equals("teacher"))
 			{
 			opteacher op=new opteacher();
 			Teachers tea=op.find2(name,pwd);
 			System.out.println(tea.getTnumber());
-				if(tea.getPwd()!=null&&tea.getPwd().equals(pwd))
-//					response.getOutputStream().write("success".getBytes("utf-8"));
-				{
+//				if(tea.getPwd()!=null&&tea.getPwd().equals(pwd))
+////					response.getOutputStream().write("success".getBytes("utf-8"));
+//				{
 					   //组装成json对象传递给app端
 					JSONArray array = new JSONArray();
 					JSONObject obj = new JSONObject();
 					try {
 						uname=tea.getTname();
-							obj.put("tnumber", tea.getTnumber());
-							obj.put("tname", tea.getTname());
-							obj.put("tdept", tea.getTdept());
-							obj.put("pwd", tea.getPwd());		
+						if(tea.getPwd()!=null&&tea.getPwd().equals(pwd))
+							{obj.put("number", tea.getTnumber());}
+						else
+							{obj.put("number", "fail");}
+
+							obj.put("image","");
+							obj.put("name", tea.getTname()+"");
+							obj.put("dept", tea.getTdept()+"");
+							obj.put("pwd", tea.getPwd()+"");		
 					} catch (Exception e) {
 						
 					}
 					array.put(obj);
 //					out.println("success");
 					System.out.println(array.toString());
-					response.getOutputStream().write((uname).getBytes("utf-8"));
+					response.getOutputStream().write((array.toString()).getBytes("utf-8"));
 					
 					
-				}
-				else
-					response.getOutputStream().write("fail".getBytes());
+				
+//				else
+//					response.getOutputStream().write("fail".getBytes());
 //					out.println("login fail");
 			}
 		

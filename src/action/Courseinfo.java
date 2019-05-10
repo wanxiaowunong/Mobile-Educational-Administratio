@@ -51,20 +51,9 @@ public class Courseinfo extends HttpServlet {
 		System.out.println("cyear:"+cyear);
 		
 
-		
-//		//方法1  只用来验证是否完成登陆
-//		//此处默认是学生用户完成认证
-//		if(op.find1(name, pwd)) 
-//		{
-//			response.getOutputStream().write("success".getBytes("utf-8"));
-//		}	
-//		else
-//			response.getOutputStream().write("login fail".getBytes());
-	
-		//方法2  与数据库进行交互，返回student对象，并判断用户信息是否登陆成功
 		List<Course> courses=null;
 		opcourse op=new opcourse();
-		courses=op.select(cdept,cyear,snumber);
+		courses=op.select(cdept,cyear,snumber);   //返回某个专业的课程信息
 		if(identity.equals("student")) {
 			
 			for(Course bean:courses ) {  //判断课程是否已选

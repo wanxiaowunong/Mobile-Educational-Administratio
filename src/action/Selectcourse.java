@@ -63,59 +63,71 @@ public class Selectcourse extends HttpServlet {
 		if(flag==0)    //学生用于选课和插入成绩和教师申请开课
 		{
 			System.out.println(identity);
-			if(!identity.equals("teacher")) {
-				if(op.insert(snumber,cnumber,tnumber, coursetime))
+			if(!identity.equals("teacher")) 
+			{
+				response.getOutputStream().write(op.insert(snumber,cnumber,tnumber, coursetime).getBytes("utf-8"));
+//				if(op.insert(snumber,cnumber,tnumber, coursetime))  //学生选课成功
+//				{
+//					response.getOutputStream().write("success".getBytes());
+//					System.out.println("选课成功");
+//				}else    //学生选课失败
+//				{
+//					response.getOutputStream().write("login fail".getBytes());
+//					System.out.println("选课失败");
+//				}
+			}else  //老师申请课程   此时有两种情况，1已申请该门课程后，本次申请对其更改信息，需要删除之前的申请 2首次申请课程，但需要判断地点时间是否冲突
+				{
+					opcourseapply op1=new opcourseapply();
+					response.getOutputStream().write((op1.insert(snumber,cnumber,applyterm,courseplace,coursetime)).getBytes("utf-8"));
+//					if(op1.insert(snumber,cnumber,applyterm,courseplace,coursetime))
+//						response.getOutputStream().write("success".getBytes("utf-8"));
+//					else
+//						response.getOutputStream().write("login fail".getBytes("utf-8"));
+					}
+					
+			}else if(flag==1)  //flag=1，表示删除选课
+				{
+				if(op.delete(snumber,cnumber))
 					response.getOutputStream().write("success".getBytes("utf-8"));
 				else
 					response.getOutputStream().write("login fail".getBytes());
-				}else{
-					opcourseapply op1=new opcourseapply();
-					if(op1.insert(snumber,cnumber,applyterm,courseplace,coursetime))
-						response.getOutputStream().write("success".getBytes("utf-8"));
-					else
-						response.getOutputStream().write("login fail".getBytes());
-				}
-			
-				
-		}else if(flag==1)
-		{
-			if(op.delete(snumber,cnumber))
-				response.getOutputStream().write("success".getBytes("utf-8"));
-				else
-				response.getOutputStream().write("login fail".getBytes());
-		}
-		else if(flag==2) {  //查成绩
-			List<Grade> grades=op.select(snumber,cnumber);
-
-			   //组装成json对象传递给app端
-			JSONArray array = new JSONArray();
-			for(Grade bean:grades ) {
-			JSONObject obj = new JSONObject();
-			try {
-				//todo 注意：传过来的对象属性不能有空值，有的话不能把该属性分装到json中
-					obj.put("snumber", bean.getSnumber());
-					obj.put("cnumber", bean.getCnumber());
-					obj.put("grade", bean.getGrade());
-			} catch (Exception e) {
-				
-			}
-			array.put(obj);
-		}
-			System.out.println(array.toString());
-			response.getOutputStream().write(array.toString().getBytes("utf-8"));
-		}
-		else if(flag==3) {  //用来查每门课的教师
-			opcourseapply op2=new opcourseapply();
-			List<CourseMultiTeacher> cteachers=op2.findby(cnumber);
-			for(CourseMultiTeacher bean:cteachers ) {  //判断课程是否已选
-				opgrade opg=new opgrade();
-			   bean.setCourseselected(""+opg.count(cnumber,bean.getTnumber()));    //flag=-1,表示课程已经选修，flag>0表示课程之前修过，flag=“”，表示课程尚未选修
-			}
-			   //组装成json对象传递给app端
-						JSONArray array = new JSONArray();
-						for(CourseMultiTeacher bean:cteachers ) {
+				}else if(flag==2) {  //查成绩
+					System.out.println("查成绩");
+					List<Grade> grades=op.select(snumber,cnumber,applyterm);
+					//组装成json对象传递给app端
+					JSONArray array = new JSONArray();
+					for(Grade bean:grades ) {
 						JSONObject obj = new JSONObject();
 						try {
+							//todo 注意：传过来的对象属性不能有空值，有的话不能把该属性分装到json中
+							obj.put("snumber", bean.getSnumber());
+							obj.put("sname", bean.getSname());
+							obj.put("cnumber", bean.getCnumber());
+							obj.put("cname", bean.getCname());
+							obj.put("tnumber", bean.getTnumber());
+							obj.put("tname", bean.getTname());
+							obj.put("term", bean.getTerm());
+							obj.put("grade", bean.getGrade());
+						} catch (Exception e) {
+				
+						}
+						array.put(obj);
+					}
+					System.out.println(array.toString());
+					response.getOutputStream().write(array.toString().getBytes("utf-8"));
+				}
+				else if(flag==3) {  //用来查每门课的教师
+					opcourseapply op2=new opcourseapply();
+					List<CourseMultiTeacher> cteachers=op2.findby(cnumber);
+					for(CourseMultiTeacher bean:cteachers ) {  //判断课程是否已选
+						opgrade opg=new opgrade();
+						bean.setCourseselected(""+opg.count(cnumber,bean.getTnumber()));    //flag=-1,表示课程已经选修，flag>0表示课程之前修过，flag=“”，表示课程尚未选修
+					}
+					//组装成json对象传递给app端
+						JSONArray array = new JSONArray();
+						for(CourseMultiTeacher bean:cteachers ) {
+							JSONObject obj = new JSONObject();
+							try {
 							//todo 注意：传过来的对象属性不能有空值，有的话不能把该属性分装到json中
 								obj.put("tname", bean.getTname());
 								obj.put("tnumber", bean.getTnumber());
@@ -131,7 +143,13 @@ public class Selectcourse extends HttpServlet {
 						System.out.println(array.toString());
 						response.getOutputStream().write(array.toString().getBytes("utf-8"));
 			
-		}
+				}
+				else if(flag==4)  //用来删除课程信息
+				{
+					opcourseapply op3=new opcourseapply();
+					response.getOutputStream().write((op3.delete(snumber,cnumber,applyterm)).getBytes("utf-8"));
+					
+				}
 //		out.println("success");
 		
 		

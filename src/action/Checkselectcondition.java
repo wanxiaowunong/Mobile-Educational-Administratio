@@ -14,7 +14,7 @@ import dateop.opteacher;
 /**
  * Servlet implementation class checkselectcondition
  */
-@WebServlet("/Checkselectcondition")
+@WebServlet("/Checkselectcondition")   //用来判断是否已开通选课
 public class Checkselectcondition extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        

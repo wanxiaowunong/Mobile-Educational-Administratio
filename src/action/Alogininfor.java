@@ -59,6 +59,7 @@ public class Alogininfor extends HttpServlet {
 					JSONArray array = new JSONArray();
 					JSONObject obj = new JSONObject();
 					try {
+						obj.put("image","");
 							obj.put("number", student.getSnumber());
 							obj.put("name", student.getSname());
 							obj.put("sex", student.getSsex());
@@ -89,6 +90,7 @@ public class Alogininfor extends HttpServlet {
 					JSONArray array = new JSONArray();
 					JSONObject obj = new JSONObject();
 					try {
+						obj.put("image","");
 							obj.put("number", tea.getTnumber());
 							obj.put("name", tea.getTname());
 							obj.put("dept", tea.getTdept());

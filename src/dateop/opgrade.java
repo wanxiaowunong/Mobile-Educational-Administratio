@@ -20,39 +20,62 @@ public class opgrade {
 		connect=conn.getConn();
 	}
 	
-	public boolean insert(String snumber,String cnumber,String tnumber,String coursetime){    //进行插入操作,
+	public String insert(String snumber,String cnumber,String tnumber,String coursetime){    //进行插入操作,
 		PreparedStatement pst=null;
 		int n=0;
-//		先判断这个时间段有没有选课
-		String sql="insert into grade(snumber,cnumber,tnumber,cyear)"+" values(?,?,?,?)";
-		try {
+		String sql="";
+		ResultSet rs=null;
+		try{//先判断这个学生申请的课程时间与本学期已申请的课程时间是否冲突
+//			sql="select * from grade,courseapply where snumber=? and courseapply.tnumber=grade.tnumber and grade.cyear=? " + 
+//					"and courseapply.coursetime=?";
+			
+			//Todo 此处查询有问题 
+			sql="select * from grade,courseapply where courseapply.tnumber=grade.tnumber and courseapply.agree='true' and courseapply.cnumber=grade.cnumber \r\n" + 
+					"and grade.snumber='"+snumber+"' and courseapply.coursetime='"+coursetime+"' and grade.cyear='"+getterm.getTerms()+"'";
 			pst=connect.prepareStatement(sql);
-			pst.setString(1, snumber);
-			pst.setString(2, cnumber);
-			pst.setString(3, tnumber);
-			pst.setString(4,getterm.getTerms());
-//			pst.setInt(3, score);
+//			pst.setString(1, snumber);
+//			pst.setString(2, getterm.getTerms());
+//			pst.setString(3, coursetime);
 			System.out.println(sql);
-			n=pst.executeUpdate();			
+			rs=pst.executeQuery();	
+			if(rs.next())         //说明冲突，则不能插入
+				{
+				System.out.println("时间冲突");
+				return "该时间段已选修课程，请选择其他授课老师，或调整课表";
+//				return false;
+				}
+			else {  
+				sql="insert into grade(snumber,cnumber,tnumber,cyear)"+" values(?,?,?,?)";
+				pst=connect.prepareStatement(sql);
+				pst.setString(1, snumber);
+				pst.setString(2, cnumber);
+				pst.setString(3, tnumber);
+				pst.setString(4,getterm.getTerms());
+//				pst.setInt(3, score);
+				System.out.println(sql);
+				n=pst.executeUpdate();		
+			}
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally{
 			DBcon.closeAll(connect, pst, null);
 		}
+		
 		if(n>0)
-		 return true;
+		 return "success";
 		else
-			return false;
+			return "数据库插入失败，请稍后再试或者联系管理员";
 	}
 	public boolean delete(String snumber,String cnumber){    //进行删除操作,
 		PreparedStatement pst=null;
 		int n=0;
-		String sql="delete from grade where snumber=? and cnumber=? ";
+		String sql="delete from grade where snumber='"+snumber+"'and cnumber='"+cnumber+"'";
 		try {
 			pst=connect.prepareStatement(sql);
-			pst.setString(1, snumber);
-			pst.setString(2, cnumber);
+//			pst.setString(1, snumber);
+//			pst.setString(2, cnumber);
 			System.out.println(sql);
 			n=pst.executeUpdate();			
 		} catch (SQLException e) {
@@ -68,16 +91,20 @@ public class opgrade {
 	}
 	/*
 	 * 根据条件查询*/
-	public List<Grade> select(String snumber,String cnumber){    //老师通过课程号查询，学生通过学号查询
+	public List<Grade> select(String snumber,String cnumber,String term){    //老师通过课程号查询，学生通过学号查询
 		PreparedStatement pst=null;
 		ResultSet rs=null;
-		String sql="select * from grade where ";
+		String sql="select * from student,teacher,courseapply,grade,course where\r\n" + 
+				"student.Snumber=grade.snumber and courseapply.tnumber=grade.tnumber and courseapply.cnumber=course.cnumber and teacher.Tnumber=grade.tnumber\r\n" + 
+				"and grade.cnumber=courseapply.cnumber and ";
 		if(!snumber.equals("null")) 
-			sql+="snumber='"+snumber+"'";
+			sql+="grade.snumber='"+snumber+"'";
 		if(!cnumber.equals("null")) 
-			sql+="cnumber='"+cnumber+"'";
+			sql+="grade.cnumber='"+cnumber+"'";
+		if(!term.equals("null")) 
+			sql+="and ggrade!=-1 and grade.cyear='"+term+"'";
 			
-		System.out.println("========="+sql);
+		System.out.println(sql);
 		List<Grade> grades=new ArrayList<Grade>();
 		try {
 			pst=connect.prepareStatement(sql);
@@ -89,8 +116,10 @@ public class opgrade {
 //				u.setName(rs.getString("name"));
 //				u.setPassword(rs.getString("password"));
 //				users.add(u);
-				grades.add( new Grade(rs.getString(1),rs.getString(2),rs.getInt(3)));
+				grades.add( new Grade(rs.getString("snumber"),rs.getString("sname"),rs.getString("cnumber"),
+						rs.getString("cname"),rs.getString("tnumber"),rs.getString("tname"),rs.getString("cyear"),rs.getInt("ggrade")));
 			}
+			System.out.println("共查询到"+grades.size()+"条数据");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -112,7 +141,7 @@ public class opgrade {
 			//处理结果集
 		
 				while(rs.next()){
-				grade=rs.getString(3);
+				grade=rs.getInt("ggrade")+"";
 			}
 			
 		} catch (SQLException e) {
@@ -128,14 +157,16 @@ public class opgrade {
 	public int count(String cnumber,String tnumber) {
 		PreparedStatement pst=null;
 		ResultSet rs=null;
-		String sql="select count(*) from grade where cnumber='"+cnumber+"' and tnumber='"+tnumber+"'";
+		String sql="select count(*) from grade where cnumber='"+cnumber+"' and tnumber='"+tnumber+"' and ggrade='-1'";
 		int cut=0;
 		try {
+			System.out.println(sql);
 			pst=connect.prepareStatement(sql);
 			rs=pst.executeQuery();
 			//处理结果集
 				while(rs.next()){
 				cut=Integer.parseInt(rs.getString(1));
+				System.out.println("已修人数"+cut);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

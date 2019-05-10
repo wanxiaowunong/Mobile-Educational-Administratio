@@ -21,7 +21,7 @@ request.setAttribute("users", users);
    <tr><th>教师姓名</th><th>课程名</th><th>上课地点</th><th>上课时间</th><th colspan="2">操作</th></tr>
    <c:forEach items="${users }" var="u">
    <tr><td>${u.tname }</td>
-   <td>${u.cname }</td><td>${u.courseplace }</td><td>${u.coursetime }</td><td><a href="update?userId=${u.id}&flag=1">同意</a>
+   <td>${u.cname }</td><td>${u.courseplace }</td><td>${u.coursetime }</td><td><a href="update?userId=${u.id}&coursetime=${u.coursetime}&courseplace=${u.courseplace}&flag=1">同意</a>
    </td><td><a href="update?userId=${u.id }&flag=0">驳回</a></td></tr>
    </c:forEach>
 </table>	

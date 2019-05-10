@@ -44,7 +44,7 @@ public class CountPeople extends HttpServlet {
 
 //		int flag=Integer.parseInt(request.getParameter("flag"));   
 		opgrade op=new opgrade();
-		System.out.println(op.count(cnumber,snumber));
+//		System.out.println(op.count(cnumber,snumber));
 					response.getOutputStream().write((""+op.count(cnumber,snumber)).getBytes("utf-8"));
 			
 	}

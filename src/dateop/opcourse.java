@@ -17,7 +17,7 @@ public class opcourse {
 		DBcon conn=new DBcon();
 		connect=conn.getConn();
 	}
-	public String selectcondition(String time) {
+	public String selectcondition(String time) {   //通过查询condition判断当前学期是否开启选课功能
 		PreparedStatement pst=null;
 		int n=0;
 		String condi="";

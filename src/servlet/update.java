@@ -37,11 +37,17 @@ public class update extends HttpServlet {
 		
 	    PrintWriter out=response.getWriter();
 		int id = Integer.parseInt(request.getParameter("userId"));
+
+		String coursetime=request.getParameter("coursetime");
+		String courseplace =request.getParameter("courseplace");
 		int flag = Integer.parseInt(request.getParameter("flag"));
 		System.out.println(id+"  "+flag);
 		opcourseapply op=new opcourseapply();
-			if(op.update(id,flag))
+		if(op.update(id,flag,coursetime,courseplace).equals("success"))
 				out.print("<script>alert(\"修改成功\");;window.location.href='userlist2.jsp';</script>");
+		else
+			out.print("<script>alert(\"课程申请失败，已把错误信息发送给教师\");;window.location.href='userlist2.jsp';</script>");
+			
 			
 		
 	}

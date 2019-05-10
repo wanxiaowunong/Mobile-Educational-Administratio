@@ -115,7 +115,7 @@ public class operate {
 			u.setSsex(null);
 			u.setSdept(null);
 			u.setPwd(null);
-			while(rs.next()){    //可能会返回一个空空对象
+			while(rs.next()){    //可能会返回一个空对象
 				u.setSnumber(rs.getString(1));
 				u.setSname(rs.getString(2));
 				u.setSsex(rs.getString(3));
