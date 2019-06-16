@@ -1,4 +1,4 @@
-package dateop;
+package dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,13 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import DB.DBcon;
-import pao.Student;
-import pao.Teachers;
+import bean.Courseapply;
+import bean.Student;
+import bean.Teachers;
 
 
-public class operate {
+public class opstudent {
 	private Connection connect;
-	public operate() {
+	public opstudent() {
 		DBcon conn=new DBcon();
 		connect=conn.getConn();
 	}
@@ -41,6 +42,39 @@ public class operate {
 		 return true;
 		else
 			return false;
+	}
+	/*
+	 * 根据条件查询*/
+	public List<Student> select(String snumber,String dept){ 
+		PreparedStatement pst=null;
+		ResultSet rs=null;
+		String sql="select * from student ";
+		if(!snumber.equals(""))
+			sql+="where snumber='"+snumber+"'";
+		if(!dept.equals(""))
+			sql+="where sdept='"+dept+"'";
+		System.out.println("========="+sql);
+		List<Student> courses=new ArrayList<Student>();
+		try {
+			pst=connect.prepareStatement(sql);
+			rs=pst.executeQuery();
+			//处理结果集
+			while(rs.next()){
+//				u.setBirthday(rs.getDate("birthday"));
+//				u.setId(rs.getInt("id"));
+//				u.setName(rs.getString("name"));
+//				u.setPassword(rs.getString("password"));
+//				users.add(u);
+				courses.add( new Student(rs.getString(1),rs.getString(5),rs.getString(2),rs.getString(3),rs.getString(4)));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally{
+			DBcon.closeAll(connect, pst, rs);
+		}
+//		System.out.println(grades);
+		return courses;
 	}
 	/*
 	 * 根据条件查询*/

@@ -1,4 +1,4 @@
-package pao;
+package bean;
 
 public class CourseInfotable {
     private String cname;

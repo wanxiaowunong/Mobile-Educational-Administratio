@@ -1,4 +1,4 @@
-package dateop;
+package dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,11 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import DB.DBcon;
-import pao.Course;
-import pao.CourseMultiTeacher;
-import pao.Courseapply;
-import pao.Grade;
-import pao.Student;
+import bean.Course;
+import bean.CourseMultiTeacher;
+import bean.Courseapply;
+import bean.Grade;
+import bean.Student;
 import util.getterm;
 
 public class opcourseapply {
@@ -105,27 +105,7 @@ public class opcourseapply {
 			 return "申请失败，插入数据出现问题，请联系客服或稍后重试";
 		
 	}
-	public boolean delete(String snumber,String cnumber,int score){    //进行插入操作,
-		PreparedStatement pst=null;
-		int n=0;
-		String sql="delete from grade where snumber=? and cnumber=? ";
-		try {
-			pst=connect.prepareStatement(sql);
-			pst.setString(1, snumber);
-			pst.setString(2, cnumber);
-			System.out.println(sql);
-			n=pst.executeUpdate();			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}finally{
-			DBcon.closeAll(connect, pst, null);
-		}
-		if(n>0)
-		 return true;
-		else
-			return false;
-	}
+
 	/*
 	 * 根据条件查询*/
 	public List<Courseapply> select(String snumber,String cnumber){ 
@@ -160,8 +140,40 @@ public class opcourseapply {
 //		System.out.println(grades);
 		return courses;
 	}
+	public List<Courseapply> select2(String tnumber,String term){  //获取某个老师已选的课程信息
+		PreparedStatement pst=null;
+		ResultSet rs=null;
+		String sql="select * from courseapply where agree='true' and tnumber='"+tnumber+"' and applyterm='"+term+"'";
+//		if(!snumber.equals(null)) 
+//			sql+="snumber='"+snumber+"'";
+//		if(!cnumber.equals(null)) 
+//			sql+="cnumber='"+cnumber+"'";
+			
+		System.out.println(sql);
+		List<Courseapply> courses=new ArrayList<Courseapply>();
+		try {
+			pst=connect.prepareStatement(sql);
+			rs=pst.executeQuery();
+			//处理结果集
+			while(rs.next()){
+//				u.setBirthday(rs.getDate("birthday"));
+//				u.setId(rs.getInt("id"));
+//				u.setName(rs.getString("name"));
+//				u.setPassword(rs.getString("password"));
+//				users.add(u);
+				courses.add( new Courseapply(rs.getInt(7),rs.getString(1),rs.getString(2),rs.getString(5),rs.getString(6)));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally{
+			DBcon.closeAll(connect, pst, rs);
+		}
+//		System.out.println(grades);
+		return courses;
+	}
 	//根据条件查询
-	public String find(String cnumber,String snumber){
+	public String find(String cnumber,String snumber){  //用来判断某门课程是否已经被申请
 		PreparedStatement pst=null;
 		ResultSet rs=null;
 		String sql="select * from courseapply where cnumber='"+cnumber+"' and tnumber='"+snumber+"'";
@@ -185,12 +197,11 @@ public class opcourseapply {
 		return agree;
 	}
 
-		public String update(int id,int flag,String coursetime,String courseplace){   //更新
+		public String update(int id,int flag,String tnumber,String coursetime,String courseplace){   //更新
 			PreparedStatement pst=null;
 			ResultSet rs=null;
 			String sql="";
 			String mess="";
-
 			int i=0;
 			try{
 				if(flag==1)   //修改之前需要判断教室时间是否冲突,以及和自己已通过课程是否冲突
@@ -207,6 +218,8 @@ public class opcourseapply {
 						{
 						System.out.println("教室时间冲突");
 						mess="教室时间冲突，请重新申请";
+						opmess op1=new opmess();
+						op1.insert("专业管理员",rs.getString("tnumber"),"教室时间冲突，请重新申请",getterm.getdate());
 						sql = "update courseapply set agree=0 , descri='"+mess+"' where id='"+id+"'";
 //						return false;
 						}
@@ -225,6 +238,8 @@ public class opcourseapply {
 							{					
 								System.out.println("自己时间冲突");
 								mess= "您申请的时间段已有课程安排，请重新申请";
+								opmess op1=new opmess();
+								op1.insert("专业管理员",rs.getString("tnumber"),"您申请的时间段已有课程安排，请重新申请",getterm.getdate());
 								sql = "update courseapply set agree=0 , descri='"+mess+"' where id='"+id+"'";
 //								return false;
 							}
@@ -234,7 +249,10 @@ public class opcourseapply {
 					}
 				}
 				else if(flag==0)
-				   sql = "update courseapply set agree=0 ,descri='管理员驳回' where id='"+id+"'";
+				   {sql = "update courseapply set agree=0 ,descri='管理员驳回' where id='"+id+"'";
+					opmess op1=new opmess();
+					op1.insert("专业管理员",tnumber,"管理员驳回你的申请，请重新申请",getterm.getdate());
+				   }
 			
 				   pst = connect.prepareStatement(sql);
 				
@@ -306,5 +324,7 @@ public class opcourseapply {
 			else
 			return "success";
 		}
+		
 
+		
 }

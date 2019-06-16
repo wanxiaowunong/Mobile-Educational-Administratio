@@ -10,10 +10,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import dateop.operate;
-import dateop.opteacher;
-import pao.Student;
-import pao.Teachers;
+import bean.Student;
+import bean.Teachers;
+import dao.opstudent;
+import dao.opteacher;
 
 /**
  * Servlet implementation class alterinfo
@@ -47,7 +47,7 @@ public class Alterinfo extends HttpServlet {
 		
 		if(identity.equals("student"))
 		{
-			operate op=new operate();
+			opstudent op=new opstudent();
 			if(op.alert1(name,pwd))
 				response.getOutputStream().write("success".getBytes("utf-8"));
 			else

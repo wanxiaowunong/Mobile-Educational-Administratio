@@ -13,9 +13,9 @@ import javax.servlet.http.HttpSession;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import dateop.*;
-import pao.Student;
-import pao.Teachers;
+import bean.Student;
+import bean.Teachers;
+import dao.*;
 
 /**
  * Servlet implementation class Alogin
@@ -49,7 +49,7 @@ public class Alogininfor extends HttpServlet {
 		
 		if(identity.equals("student"))
 		{
-			operate op=new operate();
+			opstudent op=new opstudent();
 			Student student=op.find2(name,pwd);
 			System.out.println(student.getSnumber());
 				if(student.getPwd()!=null&&student.getPwd().equals(pwd))

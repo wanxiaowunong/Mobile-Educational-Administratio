@@ -1,5 +1,7 @@
 package util;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class getterm {
 	public void getterm() {}
@@ -14,6 +16,12 @@ public class getterm {
 			term=""+(year-1)+'-'+year+2;
 		return term;
 		
+	}
+	public static  String getdate(){
+		Date d=new Date();
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		return sdf.format(d);
+
 	}
 
 }

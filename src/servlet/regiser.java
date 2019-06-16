@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import dateop.operate;
+import dao.opstudent;
 
 /**
  * Servlet implementation class regiser
@@ -41,7 +41,7 @@ public class regiser extends HttpServlet {
 		out.println("<HTML>");// 输出相应的HTML源文件
 		out.println("<BODY>");
 		out.println(username);
-		operate op=new operate();
+		opstudent op=new opstudent();
 //		if(op.insert(username, pwd,birthday)) {
 //			out.println("<h1>注册成功！</h1>");
 //			out.println("<a href='index.jsp'>点击此处返回首页</a>");

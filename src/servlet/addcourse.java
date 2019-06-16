@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import dateop.opcourse;
-import pao.Teachers;
+import bean.Teachers;
+import dao.opcourse;
 import util.getterm;
 
 /**
@@ -46,13 +46,18 @@ public class addcourse extends HttpServlet {
 		opcourse op=new opcourse();
 		if(op.insert(coursenumber,coursename,tea.getTdept(),coursetime,coursstart,coursend,getterm.getTerms())) {
 			//表示插入成功
+			System.out.println("true");
+//			out.print("<script>alert(\"修改成功\");;request.setAttribute(\"teacher\", tea);window.location.href='departadmin.jsp';</script>");
 			out.print("<script>alert(\"申请课程成功，点击返回主页面\");</script>");	
-			request.setAttribute("teacher", tea);  //把当前用户信息传到jsp
-			request.getRequestDispatcher("departadmin.jsp").forward(request, response);		
+			
 		}
 		else{
-			out.println("插入失败");
+			System.out.println("error");
+			out.print("<script>alert(\"申请课程失败，点击返回主页面\");;window.location.href='departadmin.jsp'</script>");
 		}
+		request.setAttribute("teacher", tea);  //把当前用户信息传到jsp
+		request.getRequestDispatcher("departadmin.jsp").forward(request, response);	
+			
 	}
 
 	/**

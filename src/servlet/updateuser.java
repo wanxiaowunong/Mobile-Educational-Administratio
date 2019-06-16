@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import dateop.operate;
-import pao.Student;
+import bean.Student;
+import dao.opstudent;
 
 /**
  * Servlet implementation class updateuser
@@ -34,21 +34,27 @@ public class updateuser extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html;charset=utf-8");// 设置生成的文档类型
 		PrintWriter out = response.getWriter();// 得到输出字符输出流
-		String userId = request.getParameter("userId");
-		String username = request.getParameter("username");
-		String password = request.getParameter("password");
-		String birthday = request.getParameter("birthday");
-		out.println("<html>");
-		out.println("<body>");
+		String snumber = request.getParameter("snumber");
+		String pwd = request.getParameter("pwd");
+		String dept = request.getParameter("dept");
+		String mess="";
+		opstudent op=new opstudent();
+		if(op.alert1(snumber,pwd)) {
+//			request.setAttribute("dept",dept);
+//			out.print("<script>alert(\"修改成功\");;window.location.href='userlist3.jsp';</script>");
+//			out.print("<script>alert(\"修改成功\");;window.close();</script>");
+			mess="修改成功！";
+//			request.setAttribute("mess",mess);
+			request.getRequestDispatcher("userlist3.jsp").forward(request, response);	
+			}
+		else 
+		{
+			mess="修改失败！";
+			out.print("<script>alert(\"修改失败\");;window.location.href='userlist3.jsp';</script>");
+		}
+		}
 		
-		operate op=new operate();
-//		if(op.update(Integer.parseInt(userId), username, password, birthday)) {
-//			response.sendRedirect("welcome.jsp");}
-//		else 
-//		out.println(username+"更新失败！！");
-		out.println("</body>");out.println("</html>");
-		
-	}
+	
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)

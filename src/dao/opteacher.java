@@ -1,4 +1,4 @@
-package dateop;
+package dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,42 +8,58 @@ import java.util.ArrayList;
 import java.util.List;
 
 import DB.DBcon;
-import pao.Course;
-import pao.CourseInfotable;
-import pao.Student;
-import util.parsecoursetime;
+import bean.Student;
+import bean.Teachers;
 
-public class opcoursetable {
+public class opteacher {
 	private Connection connect;
-	public opcoursetable() {
+	public opteacher() {
 		DBcon conn=new DBcon();
 		connect=conn.getConn();
 	}
-
-	public List<CourseInfotable> select(String cyear,String number,String identity){    //查询教师或学生的课表信息，并返回课表
+	//专业管理员向teacher表中插入数据
+	public boolean insert(String tnumber,String pwd,String tname,String tsex,String tdept){    //进行插入操作
+		PreparedStatement pst=null;
+		int n=0;
+		String sql="insert into teacher(tnumber,pwd,tname,tsex,tdpart)"+" values(?,?,?,?,?)";
+		try {
+			pst=connect.prepareStatement(sql);
+			pst.setString(1, tnumber);
+			pst.setString(2, pwd);
+			pst.setString(3, tname);
+			pst.setString(4, tsex);
+			pst.setString(5, tdept);
+			n=pst.executeUpdate();			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally{
+			DBcon.closeAll(connect, pst, null);
+		}
+		if(n>0)
+		 return true;
+		else
+			return false;
+	}
+	/*
+	 * 根据条件查询*/
+	public boolean find1(String snumber,String pwd){    //登录时查询是否存在用户
 		PreparedStatement pst=null;
 		ResultSet rs=null;
-		String sql="";
-		if(identity.equals("student")) //用来查询学生的课表
-			sql="select * from course,grade,teacher,courseapply where courseapply.tnumber=grade.tnumber and courseapply" + 
-					".cnumber=grade.cnumber and courseapply.agree='true' and course.cnumber=grade.cnumber and teacher.Tnumber=grade.tnumber and grade.snumber='"+number+"'and grade.cyear='"+cyear+"'";
-		else if(identity.equals("teacher"))
-			sql="select * from course,courseapply,teacher where course.cnumber=courseapply.cnumber and teacher.Tnumber=courseapply.tnumber and courseapply.agree='true' and courseapply.tnumber='"+
-		         number+"' and courseapply.applyterm='"+cyear+"'";
+		String sql="select pwd from student where snumber='"+snumber+"'";
 		System.out.println("========="+sql);
-		List<CourseInfotable> courses=new ArrayList<CourseInfotable>();
+		String pwd1 = null;
 		try {
 			pst=connect.prepareStatement(sql);
 			rs=pst.executeQuery();
-			
 			//处理结果集
 			while(rs.next()){
+				pwd1=rs.getString(1);
 //				u.setBirthday(rs.getDate("birthday"));
 //				u.setId(rs.getInt("id"));
 //				u.setName(rs.getString("name"));
 //				u.setPassword(rs.getString("password"));
 //				users.add(u);
-				courses.add(new CourseInfotable(rs.getString("cname"),rs.getString("courseplace"),rs.getString("Tname"),rs.getString("ctime"),2+"","8:50","9:50",parsecoursetime.getIdString(2,rs.getString("coursetime")),parsecoursetime.getIdString(3,rs.getString("coursetime"))));
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -51,67 +67,37 @@ public class opcoursetable {
 		}finally{
 			DBcon.closeAll(connect, pst, rs);
 		}
-		System.out.println("数据库返回"+courses.size());
-		return courses;
+		System.out.println(pwd1);
+		if(pwd1==null)
+			return false;
+		if(pwd1.equals(pwd))
+		{
+			System.out.println("yes"+pwd1);
+		return true;
+		}
+		else return false;
 	}
-//	public List<Course> select2(String cdept,String cyear,String snumber){    //查询某个专业学期课程
-//		PreparedStatement pst=null;
-//		ResultSet rs=null;
-//		 
-//		String sql="select * from course where cdept='"+cdept+"' and cyear='"+cyear+"'and cnumber not in(select cnumber from courseapply where tnumber='"+snumber+"')";
-//		System.out.println("========="+sql);
-//		String pwd1 = null;
-//		List<Course> courses=new ArrayList<Course>();
-//		try {
-//			pst=connect.prepareStatement(sql);
-//			rs=pst.executeQuery();
-//			
-//			//处理结果集
-//			while(rs.next()){
-//				pwd1=rs.getString(1);
-////				u.setBirthday(rs.getDate("birthday"));
-////				u.setId(rs.getInt("id"));
-////				u.setName(rs.getString("name"));
-////				u.setPassword(rs.getString("password"));
-////				users.add(u);
-//				courses.add(new Course(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7)));
-//			}
-//		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}finally{
-//			DBcon.closeAll(connect, pst, rs);
-//		}
-//		System.out.println("数据库返回"+courses.size());
-//		return courses;
-//	}
 	//根据条件查询
-	public List<Student> find2(String snumber,String psd){
+	public Teachers find2(String snumber,String pwd){    //登录时返回用户信息    
 		PreparedStatement pst=null;
 		ResultSet rs=null;
-		
-		List<Student> users=new ArrayList<Student>();
-		String sql="select * from student where 1=1";
-		
-		if(snumber!=null){
-			sql=sql+" and snumber='"+snumber+"'";
-		}
-		if(psd!=null){
-			sql=sql+" and pwd='"+psd+"'";
-		}
+		String sql="select * from teacher where tnumber='"+snumber+"'";
+		System.out.println("========="+sql);
+		String pwd1 = null;
+		Teachers u=new Teachers();
 		try {
 			pst=connect.prepareStatement(sql);
 			rs=pst.executeQuery();
 			//处理结果集
-			while(rs.next()){
-				
-				Student u=new Student();
-				u.setSnumber(rs.getString("snumber"));
-				u.setSname(rs.getString("sname"));
-				u.setSsex(rs.getString("ssex"));
-				u.setSdept(rs.getString("sdept"));
+			u.setTnumber(null);
+			u.setTname(null);
+			u.setTdept(null);
+			u.setPwd(null);
+			while(rs.next()){    //可能会返回一个空空对象
+				u.setTnumber(rs.getString("tnumber"));
+				u.setTname(rs.getString("tname"));
+				u.setTdept(rs.getString("tdpart"));
 				u.setPwd(rs.getString("pwd"));
-				users.add(u);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -119,7 +105,28 @@ public class opcoursetable {
 		}finally{
 			DBcon.closeAll(connect, pst, rs);
 		}
-		return users;
+		pwd1=u.getTnumber();
+		System.out.println(u.getTnumber());
+		return u;
+	}
+	public boolean alert1(String snumber,String pwd){    //登录时查询是否存在用户
+		PreparedStatement pst=null;
+		ResultSet rs=null;
+		String sql="update teacher set pwd='"+pwd+"' where tnumber='"+snumber+"'";
+		int i=0;
+		System.out.println("========="+sql);
+		try {
+			pst=connect.prepareStatement(sql);
+			i = pst.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally{
+			DBcon.closeAll(connect, pst, rs);
+		}
+		if(i==0)
+			return false;
+		else return true;
 	}
 //		public User find(Integer id){   //按编号查询
 //			PreparedStatement pst=null;
@@ -200,4 +207,3 @@ public class opcoursetable {
 		}
 
 }
-

@@ -7,9 +7,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import dateop.opcourse;
-import dateop.operate;
-import dateop.opteacher;
+import dao.opcourse;
+import dao.opstudent;
+import dao.opteacher;
 
 /**
  * Servlet implementation class checkselectcondition

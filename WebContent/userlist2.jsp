@@ -1,8 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
        <%@ page import="java.util.*" %>>
-       <%@ page import="dateop.operate" %>
-       <%@ page import="pao.Courseapply" %>
+       <%@ page import="dao.opstudent" %>
+       <%@ page import="bean.Courseapply" %>
     <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -12,7 +12,7 @@
 </head>
 <body>
 
-<jsp:useBean id="udao" class="dateop.opcourseapply" scope="page"></jsp:useBean>
+<jsp:useBean id="udao" class="dao.opcourseapply" scope="page"></jsp:useBean>
 <%
 	List<Courseapply> users=udao.select(null,null);
 request.setAttribute("users", users);
@@ -22,7 +22,7 @@ request.setAttribute("users", users);
    <c:forEach items="${users }" var="u">
    <tr><td>${u.tname }</td>
    <td>${u.cname }</td><td>${u.courseplace }</td><td>${u.coursetime }</td><td><a href="update?userId=${u.id}&coursetime=${u.coursetime}&courseplace=${u.courseplace}&flag=1">同意</a>
-   </td><td><a href="update?userId=${u.id }&flag=0">驳回</a></td></tr>
+   </td><td><a href="update?userId=${u.id }&flag=0&tnumber=${u.tname}">驳回</a></td></tr>
    </c:forEach>
 </table>	
 

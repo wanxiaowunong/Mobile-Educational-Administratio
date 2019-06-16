@@ -1,4 +1,4 @@
-package dateop;
+package dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,85 +8,42 @@ import java.util.ArrayList;
 import java.util.List;
 
 import DB.DBcon;
-import pao.Course;
-import pao.Student;
+import bean.Course;
+import bean.CourseInfotable;
+import bean.Student;
+import util.parsecoursetime;
 
-public class opcourse {
+public class opcoursetable {
 	private Connection connect;
-	public opcourse() {
+	public opcoursetable() {
 		DBcon conn=new DBcon();
 		connect=conn.getConn();
 	}
-	public String selectcondition(String time) {   //通过查询condition判断当前学期是否开启选课功能
-		PreparedStatement pst=null;
-		int n=0;
-		String condi="";
-		ResultSet rs=null;
-		String sql="select condition from selectcondition where time='"+time+"'";
-		try {
-			pst=connect.prepareStatement(sql);
-			rs=pst.executeQuery();
-			//处理结果集
-			while(rs.next()){
-				condi=rs.getString(1);	}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}finally{
-			DBcon.closeAll(connect, pst, null);
-		}
-		return condi;
-	}
-		
-	//管理员向course表中插入数据
-	public boolean insert(String cnumber,String cname,String cdept,String ctime,String cstart,String cend,String cyear){    //进行插入操作
-		PreparedStatement pst=null;
-		int n=0;
-		String sql="insert into course"+" values(?,?,?,?,?,?,?)";
-		try {
-			pst=connect.prepareStatement(sql);
-			pst.setString(1, cnumber);
-			pst.setString(2, cname);
-			pst.setString(3, cdept);
-			pst.setString(4, ctime);
-			pst.setString(5, cstart);
-			pst.setString(6, cend);
-			pst.setString(7, cyear);
-			n=pst.executeUpdate();			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}finally{
-			DBcon.closeAll(connect, pst, null);
-		}
-		if(n>0)
-		 return true;
-		else
-			return false;
-	}
-	/*
-	 * 根据条件查询*/
-	public List<Course> select(String cdept,String cyear,String snumber){    // 学生  查询某个专业学期课程
+
+	public List<CourseInfotable> select(String cyear,String number,String identity){    //查询教师或学生的课表信息，并返回课表
 		PreparedStatement pst=null;
 		ResultSet rs=null;
-		 
-		String sql="select * from course where cdept='"+cdept+"' and cyear='"+cyear+"'";
+		String sql="";
+		if(identity.equals("student")) //用来查询学生的课表
+			sql="select * from course,grade,teacher,courseapply where courseapply.tnumber=grade.tnumber and courseapply" + 
+					".cnumber=grade.cnumber and courseapply.agree='true' and course.cnumber=grade.cnumber and teacher.Tnumber=grade.tnumber and grade.snumber='"+number+"'and grade.cyear='"+cyear+"'";
+		else if(identity.equals("teacher"))
+			sql="select * from course,courseapply,teacher where course.cnumber=courseapply.cnumber and teacher.Tnumber=courseapply.tnumber and courseapply.agree='true' and courseapply.tnumber='"+
+		         number+"' and courseapply.applyterm='"+cyear+"'";
 		System.out.println("========="+sql);
-		String pwd1 = null;
-		List<Course> courses=new ArrayList<Course>();
+		List<CourseInfotable> courses=new ArrayList<CourseInfotable>();
 		try {
 			pst=connect.prepareStatement(sql);
 			rs=pst.executeQuery();
 			
 			//处理结果集
 			while(rs.next()){
-				pwd1=rs.getString(1);
 //				u.setBirthday(rs.getDate("birthday"));
 //				u.setId(rs.getInt("id"));
 //				u.setName(rs.getString("name"));
 //				u.setPassword(rs.getString("password"));
 //				users.add(u);
-				courses.add(new Course(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7),null));
+				courses.add(new CourseInfotable(rs.getString("cname"),rs.getString("courseplace"),rs.getString("Tname"),rs.getString("ctime"),2+"","8:50","9:50",parsecoursetime.getIdString(2,rs.getString("coursetime")),parsecoursetime.getIdString(3,rs.getString("coursetime"))));
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -243,3 +200,4 @@ public class opcourse {
 		}
 
 }
+

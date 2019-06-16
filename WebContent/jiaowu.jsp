@@ -7,17 +7,27 @@
 <title>Insert title here</title>
 </head>
 <body>
-<form action="Jiaowu" method="post">
+
+<div align="center">
+
+<form action="Jiaowu" method="post" >
 <p>选课系统管理页面</p>
-
-插入学生信息（批量插入）
-
-<input type="radio" name="xuankecheck" value="true" >开启选课
-
+<input type="radio" name="xuankecheck" value="on" >开启选课
+<input type="radio" name="xuankecheck" value="off" checked  >关闭选课
 <center><input type="submit" value="提交"></center>
 
-<a href="index.jsp">--返回首页--</a></td></tr>
-
 </form>
+<br>
+<br>
+<br>
+<a href="insertuser.jsp">插入学生/教师信息</a>
+<br>
+<br>
+<br>
+
+<a href="index.jsp">--返回首页--</a></td></tr>
+</div>
+
+
 </body>
 </html>

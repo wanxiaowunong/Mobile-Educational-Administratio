@@ -12,9 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import dateop.opcoursetable;
-import pao.Course;
-import pao.CourseInfotable;
+import bean.Course;
+import bean.CourseInfotable;
+import dao.opcoursetable;
 
 /**
  * Servlet implementation class CourseTableInfo

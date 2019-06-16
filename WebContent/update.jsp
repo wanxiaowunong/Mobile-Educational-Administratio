@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+  pageEncoding="UTF-8"%>
+        <%@ page import="bean.Student" %>
+    
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -7,9 +9,16 @@
 <title>Insert title here</title>
 </head>
 <body>
+<%
+    String sname=request.getParameter("sname");
+    String snumber=request.getParameter("snumber");
+    String pwd=request.getParameter("pwd");
+    String dept=request.getParameter("dept");
+    String sex=request.getParameter("ssex");
+    System.out.println(sex);
+%>	
 <form action="updateuser" method="get" >
 	<table >
-		<input type="hidden" name="userId" value="${user.id }"/>
 				<tr>
 					<td colspan="2">
 						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -19,10 +28,21 @@
 				<tr>
 					<td width="180px">
 						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+						<label for="user">学号</label>
+					</td>
+					<td>
+						<em style="color: red;">*</em>&nbsp;&nbsp;&nbsp;
+						<input type="text" name="snumber" readonly size="35px" id="username" value=<%=snumber %>>
+					</td>
+				</tr>
+				<tr>
+					<td width="180px">
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
 						<label for="user">姓名</label>
 					</td>
 					<td>
-						<em style="color: red;">*</em>&nbsp;&nbsp;&nbsp;<input type="text" name="username" size="35px" id="username" value="${user.name }"/>
+						<em style="color: red;">*</em>&nbsp;&nbsp;&nbsp;
+						<input type="text" name="sname"  readonly size="35px" id="username" value=<%=sname %>>
 					</td>
 				</tr>
 					
@@ -31,22 +51,34 @@
 						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 密码
 					</td>
 					<td>
-						<em style="color: red;">*</em>&nbsp;&nbsp;&nbsp;<input type="password" name="password" size="35px" id="password" value="${user.password }"/>
+						<em style="color: red;">*</em>&nbsp;&nbsp;&nbsp;
+						<input type="password" name="pwd" size="35px" id="password" value=<%=pwd %>>
 					</td>
 				</tr>
 				
 				<tr>
 					<td>
-						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;生日
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;专业
 					</td>
 					<td>
-						<em style="color: red;">*</em>&nbsp;&nbsp;&nbsp;<input type="text" name="birthday" size="35px" id="birthday" value="${user.birthday }"/>
+						<em style="color: red;">*</em>&nbsp;&nbsp;&nbsp;
+						<input type="text" readonly name="dept" size="35px" id="birthday" value=<%=dept %>>
+					</td>
+				</tr>
+				<tr>
+					<td width="180px">
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+						<label for="user">性别</label>
+					</td>
+					<td>
+						<em style="color: red;">*</em>&nbsp;&nbsp;&nbsp;
+						<input type="text" readonly name="sex" size="35px" id="sex" value=<%=sex %>>
 					</td>
 				</tr>
 				<tr>
 					<td style="padding-left: 75px;">
-						<input type="submit" value="修改" style="cursor: pointer;" />
-						<input type="reset" value="重置"  style="cursor: pointer;"/>
+						<input type="submit" value="修改"  />
+						<input type="reset" value="重置"  />
 					</td>
 					
 				</tr>

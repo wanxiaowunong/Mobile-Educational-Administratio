@@ -11,9 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-
-import dateop.operate;
-import pao.Teachers;
+import bean.Teachers;
+import dao.opstudent;
 
 
 /**
@@ -45,10 +44,10 @@ public class login extends HttpServlet {
 		HttpSession session= request.getSession();
 		String scode= (String)session.getAttribute("code");
 		if(!code.equals(scode)){
-			out.println("错误的验证码<a href='denglu.jsp'>返回</a>");
+			out.println("错误的验证码<a href='index.jsp'>返回</a>");
 			return;
 		}
-		operate op=new operate();
+		opstudent op=new opstudent();
 		if(op.find5(username, password)!=null) {
 			Teachers tea=(Teachers) op.find5(username, password);
 			if(tea.getTdept().equals("教务处")&&tea.getTadmin()==1)  //如果是教务处管理员身份，则跳转到教务管理页面

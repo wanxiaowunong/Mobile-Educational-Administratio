@@ -1,4 +1,4 @@
-package pao;
+package bean;
 
 public class Grade {
 	private String snumber;
@@ -9,6 +9,7 @@ public class Grade {
 	private String tname;
 	private String term;
 	private int grade;
+	private int score;
 	
 	/**
 	 * @param snumber
@@ -22,7 +23,7 @@ public class Grade {
 	 */
 
 	public Grade(String snumber, String sname, String cnumber, String cname, String tnumber, String tname, String term,
-			int grade) {
+			int grade,int score) {
 		this.snumber = snumber;
 		this.sname = sname;
 		this.cnumber = cnumber;
@@ -31,7 +32,17 @@ public class Grade {
 		this.tname = tname;
 		this.term = term;
 		this.grade = grade;
+		this.score=score;
 	}
+	
+	public int getScore() {
+		return score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
+	}
+
 	public String getSname() {
 		return sname;
 	}

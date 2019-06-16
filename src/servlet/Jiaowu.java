@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import dateop.opcondition;
+import dao.opcondition;
 import util.getterm;
 
 /**
@@ -40,12 +40,12 @@ public class Jiaowu extends HttpServlet {
 		PrintWriter out=response.getWriter();
 		String s1=request.getParameter("xuankecheck");
 		String term="";
-		if(s1.equals("true"))  //表示教务管理员请求打开选课系统，此时应该开启选课系统
+		if(s1.equals("on"))  //表示教务管理员请求打开选课系统，此时应该开启选课系统
 		{
 			
 			term=getterm.getTerms();
 			opcondition op=new opcondition();
-			op.update(term,s1);
+			op.update(term,"true");
 			System.out.println(term);
 			out.println("开启选课");
 		}else {

@@ -12,12 +12,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import dateop.opcourse;
-import dateop.opcourseapply;
-import dateop.operate;
-import dateop.opgrade;
-import pao.Course;
-import pao.Student;
+import bean.Course;
+import bean.Student;
+import dao.opcourse;
+import dao.opcourseapply;
+import dao.opgrade;
+import dao.opstudent;
 
 /**
  * Servlet implementation class courseinfo

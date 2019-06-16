@@ -9,8 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
-import dateop.operate;
+import dao.opstudent;
 
 /**
  * Servlet implementation class delete
@@ -33,7 +32,7 @@ public class delete extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html;charset=utf-8");// 设置生成的文档类型
 		String userId = request.getParameter("userId");
-		operate op=new operate();
+		opstudent op=new opstudent();
 		PrintWriter out = response.getWriter();// 得到输出字符输出流
 		if(op.delete(userId)) {
 			out.println("<h1>删除成功！</h1>");
